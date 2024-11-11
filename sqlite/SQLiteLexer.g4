@@ -38,6 +38,8 @@ ASSIGN:    '=';
 STAR:      '*';
 PLUS:      '+';
 MINUS:     '-';
+PTR:       '->';
+PTR2:      '->>';
 TILDE:     '~';
 PIPE2:     '||';
 DIV:       '/';
@@ -225,7 +227,9 @@ IDENTIFIER:
 
 NUMERIC_LITERAL: ((DIGIT+ ('.' DIGIT*)?) | ('.' DIGIT+)) ('E' [-+]? DIGIT+)? | '0x' HEX_DIGIT+;
 
-BIND_PARAMETER: '?' DIGIT* | [:@$] IDENTIFIER;
+NUMBERED_BIND_PARAMETER: '?' DIGIT*;
+
+NAMED_BIND_PARAMETER: [:@$] IDENTIFIER;
 
 STRING_LITERAL: '\'' ( ~'\'' | '\'\'')* '\'';
 

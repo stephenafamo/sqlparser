@@ -1,7 +1,9 @@
 module github.com/stephenafamo/sqlparser
 
-go 1.20
+go 1.22
 
-require github.com/antlr/antlr4/runtime/Go/antlr/v4 v4.0.0-20230321174746-8dcc6526cfb1
+toolchain go1.23.0
 
-require golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
+require github.com/antlr4-go/antlr/v4 v4.13.1
+
+require golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842 // indirect
