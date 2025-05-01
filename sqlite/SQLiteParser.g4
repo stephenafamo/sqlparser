@@ -319,7 +319,7 @@ insert_stmt:
     with_clause? (
         INSERT_
         | REPLACE_
-        | INSERT_ OR_ (
+        | INSERT_ OR_ upsert_action=(
             REPLACE_
             | ROLLBACK_
             | ABORT_
@@ -375,10 +375,8 @@ select_core:
     (
         SELECT_ (DISTINCT_ | ALL_)? result_column (
             COMMA result_column
-        )* (FROM_ from_item)? whereExpr=where_stmt? (
-            GROUP_ BY_ groupByExpr=group_by_stmt (
-                HAVING_ havingExpr=expr
-            )?
+        )* (FROM_ from_item)? where_stmt? (
+            GROUP_ BY_ group_by_stmt (HAVING_ havingExpr=expr)?
         )? (WINDOW_ window_stmt ( COMMA window_stmt)*)?
     )
     | values_clause

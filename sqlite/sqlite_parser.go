@@ -15517,6 +15517,12 @@ type IInsert_stmtContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetUpsert_action returns the upsert_action token.
+	GetUpsert_action() antlr.Token
+
+	// SetUpsert_action sets the upsert_action token.
+	SetUpsert_action(antlr.Token)
+
 	// Getter signatures
 	INTO_() antlr.TerminalNode
 	Table_name() ITable_nameContext
@@ -15526,10 +15532,6 @@ type IInsert_stmtContext interface {
 	DEFAULT_() antlr.TerminalNode
 	VALUES_() antlr.TerminalNode
 	With_clause() IWith_clauseContext
-	ROLLBACK_() antlr.TerminalNode
-	ABORT_() antlr.TerminalNode
-	FAIL_() antlr.TerminalNode
-	IGNORE_() antlr.TerminalNode
 	Schema_name() ISchema_nameContext
 	DOT() antlr.TerminalNode
 	AS_() antlr.TerminalNode
@@ -15539,6 +15541,10 @@ type IInsert_stmtContext interface {
 	Column_name(i int) IColumn_nameContext
 	CLOSE_PAR() antlr.TerminalNode
 	Returning_clause() IReturning_clauseContext
+	ROLLBACK_() antlr.TerminalNode
+	ABORT_() antlr.TerminalNode
+	FAIL_() antlr.TerminalNode
+	IGNORE_() antlr.TerminalNode
 	AllCOMMA() []antlr.TerminalNode
 	COMMA(i int) antlr.TerminalNode
 	Values_clause() IValues_clauseContext
@@ -15551,7 +15557,8 @@ type IInsert_stmtContext interface {
 
 type Insert_stmtContext struct {
 	antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser        antlr.Parser
+	upsert_action antlr.Token
 }
 
 func NewEmptyInsert_stmtContext() *Insert_stmtContext {
@@ -15580,6 +15587,10 @@ func NewInsert_stmtContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 }
 
 func (s *Insert_stmtContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *Insert_stmtContext) GetUpsert_action() antlr.Token { return s.upsert_action }
+
+func (s *Insert_stmtContext) SetUpsert_action(v antlr.Token) { s.upsert_action = v }
 
 func (s *Insert_stmtContext) INTO_() antlr.TerminalNode {
 	return s.GetToken(SQLiteParserINTO_, 0)
@@ -15635,22 +15646,6 @@ func (s *Insert_stmtContext) With_clause() IWith_clauseContext {
 	}
 
 	return t.(IWith_clauseContext)
-}
-
-func (s *Insert_stmtContext) ROLLBACK_() antlr.TerminalNode {
-	return s.GetToken(SQLiteParserROLLBACK_, 0)
-}
-
-func (s *Insert_stmtContext) ABORT_() antlr.TerminalNode {
-	return s.GetToken(SQLiteParserABORT_, 0)
-}
-
-func (s *Insert_stmtContext) FAIL_() antlr.TerminalNode {
-	return s.GetToken(SQLiteParserFAIL_, 0)
-}
-
-func (s *Insert_stmtContext) IGNORE_() antlr.TerminalNode {
-	return s.GetToken(SQLiteParserIGNORE_, 0)
 }
 
 func (s *Insert_stmtContext) Schema_name() ISchema_nameContext {
@@ -15756,6 +15751,22 @@ func (s *Insert_stmtContext) Returning_clause() IReturning_clauseContext {
 	}
 
 	return t.(IReturning_clauseContext)
+}
+
+func (s *Insert_stmtContext) ROLLBACK_() antlr.TerminalNode {
+	return s.GetToken(SQLiteParserROLLBACK_, 0)
+}
+
+func (s *Insert_stmtContext) ABORT_() antlr.TerminalNode {
+	return s.GetToken(SQLiteParserABORT_, 0)
+}
+
+func (s *Insert_stmtContext) FAIL_() antlr.TerminalNode {
+	return s.GetToken(SQLiteParserFAIL_, 0)
+}
+
+func (s *Insert_stmtContext) IGNORE_() antlr.TerminalNode {
+	return s.GetToken(SQLiteParserIGNORE_, 0)
 }
 
 func (s *Insert_stmtContext) AllCOMMA() []antlr.TerminalNode {
@@ -15910,10 +15921,17 @@ func (p *SQLiteParser) Insert_stmt() (localctx IInsert_stmtContext) {
 		}
 		{
 			p.SetState(1048)
+
+			var _lt = p.GetTokenStream().LT(1)
+
+			localctx.(*Insert_stmtContext).upsert_action = _lt
+
 			_la = p.GetTokenStream().LA(1)
 
 			if !(_la == SQLiteParserABORT_ || ((int64((_la-74)) & ^0x3f) == 0 && ((int64(1)<<(_la-74))&38280596832649729) != 0)) {
-				p.GetErrorHandler().RecoverInline(p)
+				var _ri = p.GetErrorHandler().RecoverInline(p)
+
+				localctx.(*Insert_stmtContext).upsert_action = _ri
 			} else {
 				p.GetErrorHandler().ReportMatch(p)
 				p.Consume()
@@ -17865,20 +17883,8 @@ type ISelect_coreContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
-	// GetWhereExpr returns the whereExpr rule contexts.
-	GetWhereExpr() IWhere_stmtContext
-
-	// GetGroupByExpr returns the groupByExpr rule contexts.
-	GetGroupByExpr() IGroup_by_stmtContext
-
 	// GetHavingExpr returns the havingExpr rule contexts.
 	GetHavingExpr() IExprContext
-
-	// SetWhereExpr sets the whereExpr rule contexts.
-	SetWhereExpr(IWhere_stmtContext)
-
-	// SetGroupByExpr sets the groupByExpr rule contexts.
-	SetGroupByExpr(IGroup_by_stmtContext)
 
 	// SetHavingExpr sets the havingExpr rule contexts.
 	SetHavingExpr(IExprContext)
@@ -17891,15 +17897,15 @@ type ISelect_coreContext interface {
 	COMMA(i int) antlr.TerminalNode
 	FROM_() antlr.TerminalNode
 	From_item() IFrom_itemContext
+	Where_stmt() IWhere_stmtContext
 	GROUP_() antlr.TerminalNode
 	BY_() antlr.TerminalNode
+	Group_by_stmt() IGroup_by_stmtContext
 	WINDOW_() antlr.TerminalNode
 	AllWindow_stmt() []IWindow_stmtContext
 	Window_stmt(i int) IWindow_stmtContext
 	DISTINCT_() antlr.TerminalNode
 	ALL_() antlr.TerminalNode
-	Where_stmt() IWhere_stmtContext
-	Group_by_stmt() IGroup_by_stmtContext
 	HAVING_() antlr.TerminalNode
 	Expr() IExprContext
 	Values_clause() IValues_clauseContext
@@ -17910,10 +17916,8 @@ type ISelect_coreContext interface {
 
 type Select_coreContext struct {
 	antlr.BaseParserRuleContext
-	parser      antlr.Parser
-	whereExpr   IWhere_stmtContext
-	groupByExpr IGroup_by_stmtContext
-	havingExpr  IExprContext
+	parser     antlr.Parser
+	havingExpr IExprContext
 }
 
 func NewEmptySelect_coreContext() *Select_coreContext {
@@ -17943,15 +17947,7 @@ func NewSelect_coreContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 
 func (s *Select_coreContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *Select_coreContext) GetWhereExpr() IWhere_stmtContext { return s.whereExpr }
-
-func (s *Select_coreContext) GetGroupByExpr() IGroup_by_stmtContext { return s.groupByExpr }
-
 func (s *Select_coreContext) GetHavingExpr() IExprContext { return s.havingExpr }
-
-func (s *Select_coreContext) SetWhereExpr(v IWhere_stmtContext) { s.whereExpr = v }
-
-func (s *Select_coreContext) SetGroupByExpr(v IGroup_by_stmtContext) { s.groupByExpr = v }
 
 func (s *Select_coreContext) SetHavingExpr(v IExprContext) { s.havingExpr = v }
 
@@ -18028,12 +18024,44 @@ func (s *Select_coreContext) From_item() IFrom_itemContext {
 	return t.(IFrom_itemContext)
 }
 
+func (s *Select_coreContext) Where_stmt() IWhere_stmtContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IWhere_stmtContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IWhere_stmtContext)
+}
+
 func (s *Select_coreContext) GROUP_() antlr.TerminalNode {
 	return s.GetToken(SQLiteParserGROUP_, 0)
 }
 
 func (s *Select_coreContext) BY_() antlr.TerminalNode {
 	return s.GetToken(SQLiteParserBY_, 0)
+}
+
+func (s *Select_coreContext) Group_by_stmt() IGroup_by_stmtContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(IGroup_by_stmtContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IGroup_by_stmtContext)
 }
 
 func (s *Select_coreContext) WINDOW_() antlr.TerminalNode {
@@ -18087,38 +18115,6 @@ func (s *Select_coreContext) DISTINCT_() antlr.TerminalNode {
 
 func (s *Select_coreContext) ALL_() antlr.TerminalNode {
 	return s.GetToken(SQLiteParserALL_, 0)
-}
-
-func (s *Select_coreContext) Where_stmt() IWhere_stmtContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IWhere_stmtContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IWhere_stmtContext)
-}
-
-func (s *Select_coreContext) Group_by_stmt() IGroup_by_stmtContext {
-	var t antlr.RuleContext
-	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IGroup_by_stmtContext); ok {
-			t = ctx.(antlr.RuleContext)
-			break
-		}
-	}
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IGroup_by_stmtContext)
 }
 
 func (s *Select_coreContext) HAVING_() antlr.TerminalNode {
@@ -18294,10 +18290,7 @@ func (p *SQLiteParser) Select_core() (localctx ISelect_coreContext) {
 		if _la == SQLiteParserWHERE_ {
 			{
 				p.SetState(1208)
-
-				var _x = p.Where_stmt()
-
-				localctx.(*Select_coreContext).whereExpr = _x
+				p.Where_stmt()
 			}
 
 		}
@@ -18327,10 +18320,7 @@ func (p *SQLiteParser) Select_core() (localctx ISelect_coreContext) {
 			}
 			{
 				p.SetState(1213)
-
-				var _x = p.Group_by_stmt()
-
-				localctx.(*Select_coreContext).groupByExpr = _x
+				p.Group_by_stmt()
 			}
 			p.SetState(1216)
 			p.GetErrorHandler().Sync(p)
