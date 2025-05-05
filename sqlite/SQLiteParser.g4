@@ -420,22 +420,29 @@ compound_operator: UNION_ ALL_? | INTERSECT_ | EXCEPT_;
 
 update_stmt:
     with_clause? UPDATE_ (
-        OR_ (ROLLBACK_ | ABORT_ | REPLACE_ | FAIL_ | IGNORE_)
-    )? qualified_table_name SET_ (column_name | column_name_list) EQ expr (
-        COMMA (column_name | column_name_list) EQ expr
+        OR_ upsert_action=(
+            ROLLBACK_
+            | ABORT_
+            | REPLACE_
+            | FAIL_
+            | IGNORE_
+        )
+    )? qualified_table_name SET_ column_name_or_list EQ expr (
+        COMMA column_name_or_list EQ expr
     )* (FROM_ from_item)? where_stmt? returning_clause? (
         order_by_stmt? limit_stmt
     )?
 ;
 
+column_name_or_list: column_name | column_name_list;
+
 column_name_list:
     OPEN_PAR column_name (COMMA column_name)* CLOSE_PAR
 ;
 
-qualified_table_name: (schema_name DOT)? table_name (AS_ alias)? (
-        INDEXED_ BY_ index_name
-        | NOT_ INDEXED_
-    )?
+qualified_table_name: (schema_name DOT)? table_name (
+        AS_ table_alias
+    )? (INDEXED_ BY_ index_name | NOT_ INDEXED_)?
 ;
 
 vacuum_stmt: VACUUM_ schema_name? (INTO_ filename)?;
