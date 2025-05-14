@@ -848,17 +848,17 @@ insertStatement:
     INSERT priority=(LOW_PRIORITY | DELAYED | HIGH_PRIORITY)? IGNORE? INTO? tableName (
         PARTITION '(' partitions=uidList? ')'
     )? (
-        ('(' columns=fullColumnNameList ')')? insertStatementValue
-        | SET setFirst=updatedElement (
-            ',' setElements+=updatedElement
+        ('(' columns=fullColumnNameList? ')')? insertStatementValue
+        | SET setElement+=updatedElement (
+            ',' setElement+=updatedElement
         )*
     ) (
         AS tableAlias=uid (
-            '(' colAlias=uid (',' colAlias=uid)* ')'
+            '(' colAlias+=uid (',' colAlias+=uid)* ')'
         )?
     )? (
-        ON DUPLICATE KEY UPDATE duplicatedFirst=updatedElement (
-            ',' duplicatedElements+=updatedElement
+        ON DUPLICATE KEY UPDATE duplicated+=updatedElement (
+            ',' duplicated+=updatedElement
         )*
     )?
 ;
@@ -921,8 +921,8 @@ updateStatement:
 
 // https://dev.mysql.com/doc/refman/8.0/en/values.html
 valuesStatement:
-    VALUES '(' expressionsWithDefaults? ')' (
-        ',' '(' expressionsWithDefaults? ')'
+    VALUES expressionsWithDefaults? (
+        ',' expressionsWithDefaults?
     )*
 ;
 
@@ -930,12 +930,12 @@ valuesStatement:
 
 insertStatementValue:
     selectStatement
-    | insertFormat=(VALUES | VALUE) '(' expressionsWithDefaults? ')' (
-        ',' '(' expressionsWithDefaults? ')'
+    | insertFormat=(VALUES | VALUE) expressionsWithDefaults? (
+        ',' expressionsWithDefaults?
     )*
 ;
 
-updatedElement: fullColumnName '=' (expression | DEFAULT);
+updatedElement: fullColumnName '=' expressionOrDefault;
 
 assignmentField: uid | LOCAL_ID;
 
@@ -2049,7 +2049,7 @@ describeObjectClause: (
 
 //    DB Objects
 
-fullId: uid (DOT_ID | '.' uid)?;
+fullId: uid dottedId?;
 
 tableName: fullId;
 
@@ -2057,7 +2057,7 @@ roleName: userName | uid;
 
 fullColumnName:
     uid (dottedId dottedId?)?
-    | .? dottedId dottedId?
+    // | .? dottedId dottedId?
 ;
 
 indexColumnName: (
@@ -2181,7 +2181,6 @@ constant:
     | '-' decimalLiteral
     | hexadecimalLiteral
     | booleanLiteral
-    | REAL_LITERAL
     | BIT_STRING
     | NOT? nullLiteral=(NULL_LITERAL | NULL_SPEC_LITERAL)
 ;
@@ -2324,7 +2323,7 @@ indexColumnNames:
 expressions: expression (',' expression)*;
 
 expressionsWithDefaults:
-    expressionOrDefault (',' expressionOrDefault)*
+    '(' expressionOrDefault (',' expressionOrDefault)* ')'
 ;
 
 constants: constant (',' constant)*;
