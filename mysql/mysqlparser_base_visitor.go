@@ -116,7 +116,7 @@ func (v *BaseMySqlParserVisitor) VisitWithClause(ctx *WithClauseContext) interfa
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitCommonTableExpressions(ctx *CommonTableExpressionsContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitCommonTableExpression(ctx *CommonTableExpressionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -896,23 +896,7 @@ func (v *BaseMySqlParserVisitor) VisitReplaceStatement(ctx *ReplaceStatementCont
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitSimpleSelect(ctx *SimpleSelectContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseMySqlParserVisitor) VisitParenthesisSelect(ctx *ParenthesisSelectContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseMySqlParserVisitor) VisitUnionSelect(ctx *UnionSelectContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseMySqlParserVisitor) VisitUnionParenthesisSelect(ctx *UnionParenthesisSelectContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseMySqlParserVisitor) VisitWithLateralStatement(ctx *WithLateralStatementContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitSelectStatement(ctx *SelectStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -945,6 +929,10 @@ func (v *BaseMySqlParserVisitor) VisitSingleDeleteStatement(ctx *SingleDeleteSta
 }
 
 func (v *BaseMySqlParserVisitor) VisitMultipleDeleteStatement(ctx *MultipleDeleteStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMySqlParserVisitor) VisitMultipleDeleteTable(ctx *MultipleDeleteTableContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -984,15 +972,7 @@ func (v *BaseMySqlParserVisitor) VisitTableSources(ctx *TableSourcesContext) int
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitTableSourceBase(ctx *TableSourceBaseContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseMySqlParserVisitor) VisitTableSourceNested(ctx *TableSourceNestedContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseMySqlParserVisitor) VisitTableJson(ctx *TableJsonContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitTableSource(ctx *TableSourceContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -1001,6 +981,10 @@ func (v *BaseMySqlParserVisitor) VisitAtomTableItem(ctx *AtomTableItemContext) i
 }
 
 func (v *BaseMySqlParserVisitor) VisitSubqueryTableItem(ctx *SubqueryTableItemContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMySqlParserVisitor) VisitJsonTableItem(ctx *JsonTableItemContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -1032,31 +1016,31 @@ func (v *BaseMySqlParserVisitor) VisitNaturalJoin(ctx *NaturalJoinContext) inter
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitQueryExpression(ctx *QueryExpressionContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitJoinSpecification(ctx *JoinSpecificationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitQueryExpressionNointo(ctx *QueryExpressionNointoContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitSelectStatementBase(ctx *SelectStatementBaseContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitQuerySpecification(ctx *QuerySpecificationContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitSelectStatementFinish(ctx *SelectStatementFinishContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitQuerySpecificationNointo(ctx *QuerySpecificationNointoContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitSetQuery(ctx *SetQueryContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitUnionParenthesis(ctx *UnionParenthesisContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitSetQueryBase(ctx *SetQueryBaseContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitUnionStatement(ctx *UnionStatementContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitSetQueryInParenthesis(ctx *SetQueryInParenthesisContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitLateralStatement(ctx *LateralStatementContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitSetQueryPart(ctx *SetQueryPartContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -1089,6 +1073,10 @@ func (v *BaseMySqlParserVisitor) VisitSelectElements(ctx *SelectElementsContext)
 }
 
 func (v *BaseMySqlParserVisitor) VisitSelectStarElement(ctx *SelectStarElementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMySqlParserVisitor) VisitSelectTableElement(ctx *SelectTableElementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -1125,6 +1113,10 @@ func (v *BaseMySqlParserVisitor) VisitSelectLinesInto(ctx *SelectLinesIntoContex
 }
 
 func (v *BaseMySqlParserVisitor) VisitFromClause(ctx *FromClauseContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMySqlParserVisitor) VisitWhereClause(ctx *WhereClauseContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -1873,10 +1865,6 @@ func (v *BaseMySqlParserVisitor) VisitResignalStatement(ctx *ResignalStatementCo
 }
 
 func (v *BaseMySqlParserVisitor) VisitSignalConditionInformation(ctx *SignalConditionInformationContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseMySqlParserVisitor) VisitWithStatement(ctx *WithStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

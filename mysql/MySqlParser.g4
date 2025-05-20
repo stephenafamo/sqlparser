@@ -108,7 +108,6 @@ dmlStatement:
     | doStatement
     | handlerStatement
     | valuesStatement
-    | withStatement
 ;
 
 transactionStatement:
@@ -306,12 +305,14 @@ createTrigger:
     )? routineBody
 ;
 
-withClause: WITH RECURSIVE? commonTableExpressions;
+withClause:
+    WITH RECURSIVE? commonTableExpression (
+        ',' commonTableExpression
+    )*
+;
 
-commonTableExpressions:
-    cteName ('(' cteColumnName (',' cteColumnName)* ')')? AS '(' dmlStatement ')' (
-        ',' commonTableExpressions
-    )?
+commonTableExpression:
+    cteName ('(' cteColumnName (',' cteColumnName)* ')')? AS '(' selectStatement ')'
 ;
 
 cteName: uid;
@@ -324,8 +325,8 @@ createView:
     )? ownerStatement? (
         SQL SECURITY secContext=(DEFINER | INVOKER)
     )? VIEW fullId ('(' uidList ')')? AS (
-        '(' withClause? selectStatement ')'
-        | withClause? selectStatement (
+        '(' selectStatement ')'
+        | selectStatement (
             WITH checkOption=(CASCADED | LOCAL)? CHECK OPTION
         )?
     )
@@ -899,19 +900,10 @@ replaceStatement:
     )
 ;
 
+// INTO Clause is only supported at the end of the query
 selectStatement:
-    querySpecification lockClause? # simpleSelect
-    | queryExpression lockClause?  # parenthesisSelect
-    | querySpecificationNointo unionStatement+ (
-        UNION unionType=(ALL | DISTINCT)? (
-            querySpecification
-            | queryExpression
-        )
-    )? orderByClause? limitClause? lockClause? # unionSelect
-    | queryExpressionNointo unionParenthesis+ (
-        UNION unionType=(ALL | DISTINCT)? queryExpression
-    )? orderByClause? limitClause? lockClause?         # unionParenthesisSelect
-    | querySpecificationNointo (',' lateralStatement)+ # withLateralStatement
+    withClause? selectStatementBase selectStatementFinish selectIntoExpression?
+    | withClause? setQuery setQueryPart+ selectStatementFinish selectIntoExpression?
 ;
 
 updateStatement:
@@ -939,24 +931,32 @@ updatedElement: fullColumnName '=' expressionOrDefault;
 
 assignmentField: uid | LOCAL_ID;
 
-lockClause: FOR UPDATE | LOCK IN SHARE MODE;
+lockClause:
+    LOCK IN SHARE MODE
+    | FOR (UPDATE | SHARE) (OF tableNames=uidList)? (
+        NOWAIT
+        | SKIP_ LOCKED
+    )?
+;
 
 //    Detailed DML Statements
 
 singleDeleteStatement:
-    DELETE priority=LOW_PRIORITY? QUICK? IGNORE? FROM tableName (
-        AS? uid
-    )? (PARTITION '(' uidList ')')? (WHERE expression)? orderByClause? (
-        LIMIT limitClauseAtom
-    )?
+    withClause? DELETE priority=LOW_PRIORITY? QUICK? IGNORE? FROM tableName (
+        AS? tableAlias=uid
+    )? (PARTITION '(' partitions=uidList ')')? (
+        WHERE whereExpr=expression
+    )? orderByClause? (LIMIT limitClauseAtom)?
 ;
 
 multipleDeleteStatement:
-    DELETE priority=LOW_PRIORITY? QUICK? IGNORE? (
-        tableName ('.' '*')? (',' tableName ('.' '*')?)* FROM tableSources
-        | FROM tableName ('.' '*')? (',' tableName ('.' '*')?)* USING tableSources
-    ) (WHERE expression)?
+    withClause? DELETE priority=LOW_PRIORITY? QUICK? IGNORE? (
+        multipleDeleteTable (',' multipleDeleteTable)* FROM tableSources
+        | FROM multipleDeleteTable (',' multipleDeleteTable)* USING tableSources
+    ) (WHERE whereExpr=expression)?
 ;
+
+multipleDeleteTable: tableName ('.' '*')?;
 
 handlerOpenStatement: HANDLER tableName OPEN (AS? uid)?;
 
@@ -976,15 +976,19 @@ handlerReadStatement:
 handlerCloseStatement: HANDLER tableName CLOSE;
 
 singleUpdateStatement:
-    UPDATE priority=LOW_PRIORITY? IGNORE? tableName (AS? uid)? SET updatedElement (
+    withClause? UPDATE priority=LOW_PRIORITY? IGNORE? tableName (
+        PARTITION '(' partitions=uidList? ')'
+    )? (AS? tableAlias=uid)? SET updatedElement (
         ',' updatedElement
-    )* (WHERE expression)? orderByClause? limitClause?
+    )* (WHERE whereExpr=expression)? orderByClause? (
+        LIMIT limitClauseAtom
+    )?
 ;
 
 multipleUpdateStatement:
-    UPDATE priority=LOW_PRIORITY? IGNORE? tableSources SET updatedElement (
+    withClause? UPDATE priority=LOW_PRIORITY? IGNORE? tableSources SET updatedElement (
         ',' updatedElement
-    )* (WHERE expression)?
+    )* (WHERE whereExpr=expression)?
 ;
 
 // details
@@ -995,22 +999,21 @@ orderByClause:
 
 orderByExpression: expression order=(ASC | DESC)?;
 
+// tableReferences
 tableSources: tableSource (',' tableSource)*;
 
-tableSource:
-    tableSourceItem joinPart*           # tableSourceBase
-    | '(' tableSourceItem joinPart* ')' # tableSourceNested
-    | jsonTable                         # tableJson
-;
+// tableReference
+tableSource: tableSourceItem | tableSource joinPart;
 
+// tableFactor
 tableSourceItem:
-    tableName (PARTITION '(' uidList ')')? (AS? alias=uid)? (
-        indexHint (',' indexHint)*
-    )? # atomTableItem
-    | (
-        selectStatement
-        | '(' parenthesisSubquery=selectStatement ')'
-    ) AS? alias=uid        # subqueryTableItem
+    tableName (PARTITION '(' partitions=uidList ')')? (
+        AS? tableAlias=uid
+    )? (indexHint (',' indexHint)*)? # atomTableItem
+    | LATERAL? '(' subquery=selectStatement ')' AS? tableAlias=uid (
+        '(' colAlias+=uid (',' colAlias+=uid)* ')'
+    )?                     # subqueryTableItem
+    | jsonTable            # jsonTableItem
     | '(' tableSources ')' # tableSourcesItem
 ;
 
@@ -1023,64 +1026,34 @@ indexHint:
 
 indexHintType: JOIN | ORDER BY | GROUP BY;
 
-joinPart: (INNER | CROSS)? JOIN LATERAL? tableSourceItem (
-        ON expression
-        | USING '(' uidList ')'
-    )?                                               # innerJoin
-    | STRAIGHT_JOIN tableSourceItem (ON expression)? # straightJoin
-    | (LEFT | RIGHT) OUTER? JOIN LATERAL? tableSourceItem (
-        ON expression
-        | USING '(' uidList ')'
-    )                                                       # outerJoin
-    | NATURAL ((LEFT | RIGHT) OUTER?)? JOIN tableSourceItem # naturalJoin
+joinPart:
+    (INNER | CROSS)? JOIN tableSourceItem joinSpecification?   # innerJoin
+    | STRAIGHT_JOIN tableSourceItem joinSpecification?         # straightJoin
+    | (LEFT | RIGHT) OUTER? JOIN tableSource joinSpecification # outerJoin
+    | NATURAL ((LEFT | RIGHT) OUTER?)? JOIN tableSourceItem    # naturalJoin
 ;
+
+joinSpecification: ON expression | USING '(' uidList ')';
 
 //    Select Statement's Details
 
-queryExpression:
-    '(' querySpecification ')'
-    | '(' queryExpression ')'
+selectStatementBase:
+    SELECT selectSpec* selectElements fromClause? whereClause? groupByClause? havingClause?
+        windowClause?
 ;
 
-queryExpressionNointo:
-    '(' querySpecificationNointo ')'
-    | '(' queryExpressionNointo ')'
+selectStatementFinish: orderByClause? limitClause? lockClause?;
+
+setQuery: setQueryBase | setQueryInParenthesis;
+
+setQueryBase: selectStatementBase;
+
+setQueryInParenthesis:
+    '(' selectStatementBase selectStatementFinish ')'
 ;
 
-querySpecification:
-    SELECT selectSpec* selectElements selectIntoExpression? fromClause groupByClause? havingClause?
-        windowClause? orderByClause? limitClause?
-    | SELECT selectSpec* selectElements fromClause groupByClause? havingClause? windowClause?
-        orderByClause? limitClause? selectIntoExpression?
-;
-
-querySpecificationNointo:
-    SELECT selectSpec* selectElements fromClause groupByClause? havingClause? windowClause?
-        orderByClause? limitClause?
-;
-
-unionParenthesis:
-    UNION unionType=(ALL | DISTINCT)? queryExpressionNointo
-;
-
-unionStatement:
-    UNION unionType=(ALL | DISTINCT)? (
-        querySpecificationNointo
-        | queryExpressionNointo
-    )
-;
-
-lateralStatement:
-    LATERAL (
-        querySpecificationNointo
-        | queryExpressionNointo
-        | (
-            '(' (
-                querySpecificationNointo
-                | queryExpressionNointo
-            ) ')' (AS? uid)?
-        )
-    )
+setQueryPart:
+    setOp=(UNION | INTERSECT | EXCEPT) setType=(ALL | DISTINCT)? setQuery
 ;
 
 // JSON
@@ -1123,11 +1096,11 @@ selectSpec: (ALL | DISTINCT | DISTINCTROW)
     | SQL_CALC_FOUND_ROWS
 ;
 
-selectElements: (star='*' | selectElement) (',' selectElement)*
-;
+selectElements: selectElement (',' selectElement)*;
 
 selectElement:
-    fullId '.' '*'                                 # selectStarElement
+    '*'                                            # selectStarElement
+    | fullId '.' '*'                               # selectTableElement
     | fullColumnName (AS? uid)?                    # selectColumnElement
     | functionCall (AS? uid)?                      # selectFunctionElement
     | (LOCAL_ID VAR_ASSIGN)? expression (AS? uid)? # selectExpressionElement
@@ -1156,14 +1129,15 @@ selectLinesInto:
     | TERMINATED BY terminationLine=STRING_LITERAL
 ;
 
-fromClause: (FROM tableSources)? (WHERE whereExpr=expression)?
-;
+fromClause: FROM tableSources;
+
+whereClause: WHERE expression;
 
 groupByClause:
     GROUP BY groupByItem (',' groupByItem)* (WITH ROLLUP)?
 ;
 
-havingClause: HAVING havingExpr=expression;
+havingClause: HAVING expression;
 
 windowClause:
     WINDOW windowName AS '(' windowSpec ')' (
@@ -1995,12 +1969,6 @@ signalConditionInformation: (
     )
 ;
 
-withStatement:
-    WITH RECURSIVE? commonTableExpressions (
-        ',' commonTableExpressions
-    )*
-;
-
 diagnosticsStatement:
     GET (CURRENT | STACKED)? DIAGNOSTICS (
         (
@@ -2055,10 +2023,7 @@ tableName: fullId;
 
 roleName: userName | uid;
 
-fullColumnName:
-    uid (dottedId dottedId?)?
-    // | .? dottedId dottedId?
-;
+fullColumnName: uid (dottedId dottedId?)?;
 
 indexColumnName: (
         (uid | STRING_LITERAL) ('(' decimalLiteral ')')?
@@ -2126,12 +2091,7 @@ xuidStringId:
 
 authPlugin: uid | STRING_LITERAL;
 
-uid:
-    simpleId
-    //| DOUBLE_QUOTE_ID
-    | REVERSE_QUOTE_ID
-    | CHARSET_REVERSE_QOUTE_STRING
-;
+uid: simpleId | REVERSE_QUOTE_ID | CHARSET_REVERSE_QOUTE_STRING;
 
 simpleId:
     ID

@@ -129,6 +129,7 @@ INFILE                        : 'INFILE';
 INNER                         : 'INNER';
 INOUT                         : 'INOUT';
 INSERT                        : 'INSERT';
+INTERSECT                     : 'INTERSECT';
 INTERVAL                      : 'INTERVAL';
 INTO                          : 'INTO';
 IS                            : 'IS';

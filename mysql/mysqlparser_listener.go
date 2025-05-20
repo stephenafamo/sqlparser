@@ -89,8 +89,8 @@ type MySqlParserListener interface {
 	// EnterWithClause is called when entering the withClause production.
 	EnterWithClause(c *WithClauseContext)
 
-	// EnterCommonTableExpressions is called when entering the commonTableExpressions production.
-	EnterCommonTableExpressions(c *CommonTableExpressionsContext)
+	// EnterCommonTableExpression is called when entering the commonTableExpression production.
+	EnterCommonTableExpression(c *CommonTableExpressionContext)
 
 	// EnterCteName is called when entering the cteName production.
 	EnterCteName(c *CteNameContext)
@@ -674,20 +674,8 @@ type MySqlParserListener interface {
 	// EnterReplaceStatement is called when entering the replaceStatement production.
 	EnterReplaceStatement(c *ReplaceStatementContext)
 
-	// EnterSimpleSelect is called when entering the simpleSelect production.
-	EnterSimpleSelect(c *SimpleSelectContext)
-
-	// EnterParenthesisSelect is called when entering the parenthesisSelect production.
-	EnterParenthesisSelect(c *ParenthesisSelectContext)
-
-	// EnterUnionSelect is called when entering the unionSelect production.
-	EnterUnionSelect(c *UnionSelectContext)
-
-	// EnterUnionParenthesisSelect is called when entering the unionParenthesisSelect production.
-	EnterUnionParenthesisSelect(c *UnionParenthesisSelectContext)
-
-	// EnterWithLateralStatement is called when entering the withLateralStatement production.
-	EnterWithLateralStatement(c *WithLateralStatementContext)
+	// EnterSelectStatement is called when entering the selectStatement production.
+	EnterSelectStatement(c *SelectStatementContext)
 
 	// EnterUpdateStatement is called when entering the updateStatement production.
 	EnterUpdateStatement(c *UpdateStatementContext)
@@ -712,6 +700,9 @@ type MySqlParserListener interface {
 
 	// EnterMultipleDeleteStatement is called when entering the multipleDeleteStatement production.
 	EnterMultipleDeleteStatement(c *MultipleDeleteStatementContext)
+
+	// EnterMultipleDeleteTable is called when entering the multipleDeleteTable production.
+	EnterMultipleDeleteTable(c *MultipleDeleteTableContext)
 
 	// EnterHandlerOpenStatement is called when entering the handlerOpenStatement production.
 	EnterHandlerOpenStatement(c *HandlerOpenStatementContext)
@@ -740,20 +731,17 @@ type MySqlParserListener interface {
 	// EnterTableSources is called when entering the tableSources production.
 	EnterTableSources(c *TableSourcesContext)
 
-	// EnterTableSourceBase is called when entering the tableSourceBase production.
-	EnterTableSourceBase(c *TableSourceBaseContext)
-
-	// EnterTableSourceNested is called when entering the tableSourceNested production.
-	EnterTableSourceNested(c *TableSourceNestedContext)
-
-	// EnterTableJson is called when entering the tableJson production.
-	EnterTableJson(c *TableJsonContext)
+	// EnterTableSource is called when entering the tableSource production.
+	EnterTableSource(c *TableSourceContext)
 
 	// EnterAtomTableItem is called when entering the atomTableItem production.
 	EnterAtomTableItem(c *AtomTableItemContext)
 
 	// EnterSubqueryTableItem is called when entering the subqueryTableItem production.
 	EnterSubqueryTableItem(c *SubqueryTableItemContext)
+
+	// EnterJsonTableItem is called when entering the jsonTableItem production.
+	EnterJsonTableItem(c *JsonTableItemContext)
 
 	// EnterTableSourcesItem is called when entering the tableSourcesItem production.
 	EnterTableSourcesItem(c *TableSourcesItemContext)
@@ -776,26 +764,26 @@ type MySqlParserListener interface {
 	// EnterNaturalJoin is called when entering the naturalJoin production.
 	EnterNaturalJoin(c *NaturalJoinContext)
 
-	// EnterQueryExpression is called when entering the queryExpression production.
-	EnterQueryExpression(c *QueryExpressionContext)
+	// EnterJoinSpecification is called when entering the joinSpecification production.
+	EnterJoinSpecification(c *JoinSpecificationContext)
 
-	// EnterQueryExpressionNointo is called when entering the queryExpressionNointo production.
-	EnterQueryExpressionNointo(c *QueryExpressionNointoContext)
+	// EnterSelectStatementBase is called when entering the selectStatementBase production.
+	EnterSelectStatementBase(c *SelectStatementBaseContext)
 
-	// EnterQuerySpecification is called when entering the querySpecification production.
-	EnterQuerySpecification(c *QuerySpecificationContext)
+	// EnterSelectStatementFinish is called when entering the selectStatementFinish production.
+	EnterSelectStatementFinish(c *SelectStatementFinishContext)
 
-	// EnterQuerySpecificationNointo is called when entering the querySpecificationNointo production.
-	EnterQuerySpecificationNointo(c *QuerySpecificationNointoContext)
+	// EnterSetQuery is called when entering the setQuery production.
+	EnterSetQuery(c *SetQueryContext)
 
-	// EnterUnionParenthesis is called when entering the unionParenthesis production.
-	EnterUnionParenthesis(c *UnionParenthesisContext)
+	// EnterSetQueryBase is called when entering the setQueryBase production.
+	EnterSetQueryBase(c *SetQueryBaseContext)
 
-	// EnterUnionStatement is called when entering the unionStatement production.
-	EnterUnionStatement(c *UnionStatementContext)
+	// EnterSetQueryInParenthesis is called when entering the setQueryInParenthesis production.
+	EnterSetQueryInParenthesis(c *SetQueryInParenthesisContext)
 
-	// EnterLateralStatement is called when entering the lateralStatement production.
-	EnterLateralStatement(c *LateralStatementContext)
+	// EnterSetQueryPart is called when entering the setQueryPart production.
+	EnterSetQueryPart(c *SetQueryPartContext)
 
 	// EnterJsonTable is called when entering the jsonTable production.
 	EnterJsonTable(c *JsonTableContext)
@@ -820,6 +808,9 @@ type MySqlParserListener interface {
 
 	// EnterSelectStarElement is called when entering the selectStarElement production.
 	EnterSelectStarElement(c *SelectStarElementContext)
+
+	// EnterSelectTableElement is called when entering the selectTableElement production.
+	EnterSelectTableElement(c *SelectTableElementContext)
 
 	// EnterSelectColumnElement is called when entering the selectColumnElement production.
 	EnterSelectColumnElement(c *SelectColumnElementContext)
@@ -847,6 +838,9 @@ type MySqlParserListener interface {
 
 	// EnterFromClause is called when entering the fromClause production.
 	EnterFromClause(c *FromClauseContext)
+
+	// EnterWhereClause is called when entering the whereClause production.
+	EnterWhereClause(c *WhereClauseContext)
 
 	// EnterGroupByClause is called when entering the groupByClause production.
 	EnterGroupByClause(c *GroupByClauseContext)
@@ -1409,9 +1403,6 @@ type MySqlParserListener interface {
 	// EnterSignalConditionInformation is called when entering the signalConditionInformation production.
 	EnterSignalConditionInformation(c *SignalConditionInformationContext)
 
-	// EnterWithStatement is called when entering the withStatement production.
-	EnterWithStatement(c *WithStatementContext)
-
 	// EnterDiagnosticsStatement is called when entering the diagnosticsStatement production.
 	EnterDiagnosticsStatement(c *DiagnosticsStatementContext)
 
@@ -1910,8 +1901,8 @@ type MySqlParserListener interface {
 	// ExitWithClause is called when exiting the withClause production.
 	ExitWithClause(c *WithClauseContext)
 
-	// ExitCommonTableExpressions is called when exiting the commonTableExpressions production.
-	ExitCommonTableExpressions(c *CommonTableExpressionsContext)
+	// ExitCommonTableExpression is called when exiting the commonTableExpression production.
+	ExitCommonTableExpression(c *CommonTableExpressionContext)
 
 	// ExitCteName is called when exiting the cteName production.
 	ExitCteName(c *CteNameContext)
@@ -2495,20 +2486,8 @@ type MySqlParserListener interface {
 	// ExitReplaceStatement is called when exiting the replaceStatement production.
 	ExitReplaceStatement(c *ReplaceStatementContext)
 
-	// ExitSimpleSelect is called when exiting the simpleSelect production.
-	ExitSimpleSelect(c *SimpleSelectContext)
-
-	// ExitParenthesisSelect is called when exiting the parenthesisSelect production.
-	ExitParenthesisSelect(c *ParenthesisSelectContext)
-
-	// ExitUnionSelect is called when exiting the unionSelect production.
-	ExitUnionSelect(c *UnionSelectContext)
-
-	// ExitUnionParenthesisSelect is called when exiting the unionParenthesisSelect production.
-	ExitUnionParenthesisSelect(c *UnionParenthesisSelectContext)
-
-	// ExitWithLateralStatement is called when exiting the withLateralStatement production.
-	ExitWithLateralStatement(c *WithLateralStatementContext)
+	// ExitSelectStatement is called when exiting the selectStatement production.
+	ExitSelectStatement(c *SelectStatementContext)
 
 	// ExitUpdateStatement is called when exiting the updateStatement production.
 	ExitUpdateStatement(c *UpdateStatementContext)
@@ -2533,6 +2512,9 @@ type MySqlParserListener interface {
 
 	// ExitMultipleDeleteStatement is called when exiting the multipleDeleteStatement production.
 	ExitMultipleDeleteStatement(c *MultipleDeleteStatementContext)
+
+	// ExitMultipleDeleteTable is called when exiting the multipleDeleteTable production.
+	ExitMultipleDeleteTable(c *MultipleDeleteTableContext)
 
 	// ExitHandlerOpenStatement is called when exiting the handlerOpenStatement production.
 	ExitHandlerOpenStatement(c *HandlerOpenStatementContext)
@@ -2561,20 +2543,17 @@ type MySqlParserListener interface {
 	// ExitTableSources is called when exiting the tableSources production.
 	ExitTableSources(c *TableSourcesContext)
 
-	// ExitTableSourceBase is called when exiting the tableSourceBase production.
-	ExitTableSourceBase(c *TableSourceBaseContext)
-
-	// ExitTableSourceNested is called when exiting the tableSourceNested production.
-	ExitTableSourceNested(c *TableSourceNestedContext)
-
-	// ExitTableJson is called when exiting the tableJson production.
-	ExitTableJson(c *TableJsonContext)
+	// ExitTableSource is called when exiting the tableSource production.
+	ExitTableSource(c *TableSourceContext)
 
 	// ExitAtomTableItem is called when exiting the atomTableItem production.
 	ExitAtomTableItem(c *AtomTableItemContext)
 
 	// ExitSubqueryTableItem is called when exiting the subqueryTableItem production.
 	ExitSubqueryTableItem(c *SubqueryTableItemContext)
+
+	// ExitJsonTableItem is called when exiting the jsonTableItem production.
+	ExitJsonTableItem(c *JsonTableItemContext)
 
 	// ExitTableSourcesItem is called when exiting the tableSourcesItem production.
 	ExitTableSourcesItem(c *TableSourcesItemContext)
@@ -2597,26 +2576,26 @@ type MySqlParserListener interface {
 	// ExitNaturalJoin is called when exiting the naturalJoin production.
 	ExitNaturalJoin(c *NaturalJoinContext)
 
-	// ExitQueryExpression is called when exiting the queryExpression production.
-	ExitQueryExpression(c *QueryExpressionContext)
+	// ExitJoinSpecification is called when exiting the joinSpecification production.
+	ExitJoinSpecification(c *JoinSpecificationContext)
 
-	// ExitQueryExpressionNointo is called when exiting the queryExpressionNointo production.
-	ExitQueryExpressionNointo(c *QueryExpressionNointoContext)
+	// ExitSelectStatementBase is called when exiting the selectStatementBase production.
+	ExitSelectStatementBase(c *SelectStatementBaseContext)
 
-	// ExitQuerySpecification is called when exiting the querySpecification production.
-	ExitQuerySpecification(c *QuerySpecificationContext)
+	// ExitSelectStatementFinish is called when exiting the selectStatementFinish production.
+	ExitSelectStatementFinish(c *SelectStatementFinishContext)
 
-	// ExitQuerySpecificationNointo is called when exiting the querySpecificationNointo production.
-	ExitQuerySpecificationNointo(c *QuerySpecificationNointoContext)
+	// ExitSetQuery is called when exiting the setQuery production.
+	ExitSetQuery(c *SetQueryContext)
 
-	// ExitUnionParenthesis is called when exiting the unionParenthesis production.
-	ExitUnionParenthesis(c *UnionParenthesisContext)
+	// ExitSetQueryBase is called when exiting the setQueryBase production.
+	ExitSetQueryBase(c *SetQueryBaseContext)
 
-	// ExitUnionStatement is called when exiting the unionStatement production.
-	ExitUnionStatement(c *UnionStatementContext)
+	// ExitSetQueryInParenthesis is called when exiting the setQueryInParenthesis production.
+	ExitSetQueryInParenthesis(c *SetQueryInParenthesisContext)
 
-	// ExitLateralStatement is called when exiting the lateralStatement production.
-	ExitLateralStatement(c *LateralStatementContext)
+	// ExitSetQueryPart is called when exiting the setQueryPart production.
+	ExitSetQueryPart(c *SetQueryPartContext)
 
 	// ExitJsonTable is called when exiting the jsonTable production.
 	ExitJsonTable(c *JsonTableContext)
@@ -2641,6 +2620,9 @@ type MySqlParserListener interface {
 
 	// ExitSelectStarElement is called when exiting the selectStarElement production.
 	ExitSelectStarElement(c *SelectStarElementContext)
+
+	// ExitSelectTableElement is called when exiting the selectTableElement production.
+	ExitSelectTableElement(c *SelectTableElementContext)
 
 	// ExitSelectColumnElement is called when exiting the selectColumnElement production.
 	ExitSelectColumnElement(c *SelectColumnElementContext)
@@ -2668,6 +2650,9 @@ type MySqlParserListener interface {
 
 	// ExitFromClause is called when exiting the fromClause production.
 	ExitFromClause(c *FromClauseContext)
+
+	// ExitWhereClause is called when exiting the whereClause production.
+	ExitWhereClause(c *WhereClauseContext)
 
 	// ExitGroupByClause is called when exiting the groupByClause production.
 	ExitGroupByClause(c *GroupByClauseContext)
@@ -3229,9 +3214,6 @@ type MySqlParserListener interface {
 
 	// ExitSignalConditionInformation is called when exiting the signalConditionInformation production.
 	ExitSignalConditionInformation(c *SignalConditionInformationContext)
-
-	// ExitWithStatement is called when exiting the withStatement production.
-	ExitWithStatement(c *WithStatementContext)
 
 	// ExitDiagnosticsStatement is called when exiting the diagnosticsStatement production.
 	ExitDiagnosticsStatement(c *DiagnosticsStatementContext)

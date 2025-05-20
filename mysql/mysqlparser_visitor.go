@@ -89,8 +89,8 @@ type MySqlParserVisitor interface {
 	// Visit a parse tree produced by MySqlParser#withClause.
 	VisitWithClause(ctx *WithClauseContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#commonTableExpressions.
-	VisitCommonTableExpressions(ctx *CommonTableExpressionsContext) interface{}
+	// Visit a parse tree produced by MySqlParser#commonTableExpression.
+	VisitCommonTableExpression(ctx *CommonTableExpressionContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#cteName.
 	VisitCteName(ctx *CteNameContext) interface{}
@@ -674,20 +674,8 @@ type MySqlParserVisitor interface {
 	// Visit a parse tree produced by MySqlParser#replaceStatement.
 	VisitReplaceStatement(ctx *ReplaceStatementContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#simpleSelect.
-	VisitSimpleSelect(ctx *SimpleSelectContext) interface{}
-
-	// Visit a parse tree produced by MySqlParser#parenthesisSelect.
-	VisitParenthesisSelect(ctx *ParenthesisSelectContext) interface{}
-
-	// Visit a parse tree produced by MySqlParser#unionSelect.
-	VisitUnionSelect(ctx *UnionSelectContext) interface{}
-
-	// Visit a parse tree produced by MySqlParser#unionParenthesisSelect.
-	VisitUnionParenthesisSelect(ctx *UnionParenthesisSelectContext) interface{}
-
-	// Visit a parse tree produced by MySqlParser#withLateralStatement.
-	VisitWithLateralStatement(ctx *WithLateralStatementContext) interface{}
+	// Visit a parse tree produced by MySqlParser#selectStatement.
+	VisitSelectStatement(ctx *SelectStatementContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#updateStatement.
 	VisitUpdateStatement(ctx *UpdateStatementContext) interface{}
@@ -712,6 +700,9 @@ type MySqlParserVisitor interface {
 
 	// Visit a parse tree produced by MySqlParser#multipleDeleteStatement.
 	VisitMultipleDeleteStatement(ctx *MultipleDeleteStatementContext) interface{}
+
+	// Visit a parse tree produced by MySqlParser#multipleDeleteTable.
+	VisitMultipleDeleteTable(ctx *MultipleDeleteTableContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#handlerOpenStatement.
 	VisitHandlerOpenStatement(ctx *HandlerOpenStatementContext) interface{}
@@ -740,20 +731,17 @@ type MySqlParserVisitor interface {
 	// Visit a parse tree produced by MySqlParser#tableSources.
 	VisitTableSources(ctx *TableSourcesContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#tableSourceBase.
-	VisitTableSourceBase(ctx *TableSourceBaseContext) interface{}
-
-	// Visit a parse tree produced by MySqlParser#tableSourceNested.
-	VisitTableSourceNested(ctx *TableSourceNestedContext) interface{}
-
-	// Visit a parse tree produced by MySqlParser#tableJson.
-	VisitTableJson(ctx *TableJsonContext) interface{}
+	// Visit a parse tree produced by MySqlParser#tableSource.
+	VisitTableSource(ctx *TableSourceContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#atomTableItem.
 	VisitAtomTableItem(ctx *AtomTableItemContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#subqueryTableItem.
 	VisitSubqueryTableItem(ctx *SubqueryTableItemContext) interface{}
+
+	// Visit a parse tree produced by MySqlParser#jsonTableItem.
+	VisitJsonTableItem(ctx *JsonTableItemContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#tableSourcesItem.
 	VisitTableSourcesItem(ctx *TableSourcesItemContext) interface{}
@@ -776,26 +764,26 @@ type MySqlParserVisitor interface {
 	// Visit a parse tree produced by MySqlParser#naturalJoin.
 	VisitNaturalJoin(ctx *NaturalJoinContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#queryExpression.
-	VisitQueryExpression(ctx *QueryExpressionContext) interface{}
+	// Visit a parse tree produced by MySqlParser#joinSpecification.
+	VisitJoinSpecification(ctx *JoinSpecificationContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#queryExpressionNointo.
-	VisitQueryExpressionNointo(ctx *QueryExpressionNointoContext) interface{}
+	// Visit a parse tree produced by MySqlParser#selectStatementBase.
+	VisitSelectStatementBase(ctx *SelectStatementBaseContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#querySpecification.
-	VisitQuerySpecification(ctx *QuerySpecificationContext) interface{}
+	// Visit a parse tree produced by MySqlParser#selectStatementFinish.
+	VisitSelectStatementFinish(ctx *SelectStatementFinishContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#querySpecificationNointo.
-	VisitQuerySpecificationNointo(ctx *QuerySpecificationNointoContext) interface{}
+	// Visit a parse tree produced by MySqlParser#setQuery.
+	VisitSetQuery(ctx *SetQueryContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#unionParenthesis.
-	VisitUnionParenthesis(ctx *UnionParenthesisContext) interface{}
+	// Visit a parse tree produced by MySqlParser#setQueryBase.
+	VisitSetQueryBase(ctx *SetQueryBaseContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#unionStatement.
-	VisitUnionStatement(ctx *UnionStatementContext) interface{}
+	// Visit a parse tree produced by MySqlParser#setQueryInParenthesis.
+	VisitSetQueryInParenthesis(ctx *SetQueryInParenthesisContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#lateralStatement.
-	VisitLateralStatement(ctx *LateralStatementContext) interface{}
+	// Visit a parse tree produced by MySqlParser#setQueryPart.
+	VisitSetQueryPart(ctx *SetQueryPartContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#jsonTable.
 	VisitJsonTable(ctx *JsonTableContext) interface{}
@@ -820,6 +808,9 @@ type MySqlParserVisitor interface {
 
 	// Visit a parse tree produced by MySqlParser#selectStarElement.
 	VisitSelectStarElement(ctx *SelectStarElementContext) interface{}
+
+	// Visit a parse tree produced by MySqlParser#selectTableElement.
+	VisitSelectTableElement(ctx *SelectTableElementContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#selectColumnElement.
 	VisitSelectColumnElement(ctx *SelectColumnElementContext) interface{}
@@ -847,6 +838,9 @@ type MySqlParserVisitor interface {
 
 	// Visit a parse tree produced by MySqlParser#fromClause.
 	VisitFromClause(ctx *FromClauseContext) interface{}
+
+	// Visit a parse tree produced by MySqlParser#whereClause.
+	VisitWhereClause(ctx *WhereClauseContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#groupByClause.
 	VisitGroupByClause(ctx *GroupByClauseContext) interface{}
@@ -1408,9 +1402,6 @@ type MySqlParserVisitor interface {
 
 	// Visit a parse tree produced by MySqlParser#signalConditionInformation.
 	VisitSignalConditionInformation(ctx *SignalConditionInformationContext) interface{}
-
-	// Visit a parse tree produced by MySqlParser#withStatement.
-	VisitWithStatement(ctx *WithStatementContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#diagnosticsStatement.
 	VisitDiagnosticsStatement(ctx *DiagnosticsStatementContext) interface{}
