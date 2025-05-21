@@ -2052,14 +2052,6 @@ func (v *BaseMySqlParserVisitor) VisitIndexColumnNames(ctx *IndexColumnNamesCont
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitExpressions(ctx *ExpressionsContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseMySqlParserVisitor) VisitExpressionsWithDefaults(ctx *ExpressionsWithDefaultsContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseMySqlParserVisitor) VisitConstants(ctx *ConstantsContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -2077,6 +2069,10 @@ func (v *BaseMySqlParserVisitor) VisitDefaultValue(ctx *DefaultValueContext) int
 }
 
 func (v *BaseMySqlParserVisitor) VisitCurrentTimestamp(ctx *CurrentTimestampContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMySqlParserVisitor) VisitExpressionsWithDefaults(ctx *ExpressionsWithDefaultsContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -2252,6 +2248,10 @@ func (v *BaseMySqlParserVisitor) VisitFunctionArg(ctx *FunctionArgContext) inter
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseMySqlParserVisitor) VisitExpressions(ctx *ExpressionsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseMySqlParserVisitor) VisitIsExpression(ctx *IsExpressionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -2288,7 +2288,7 @@ func (v *BaseMySqlParserVisitor) VisitBinaryComparisonPredicate(ctx *BinaryCompa
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseMySqlParserVisitor) VisitInPredicate(ctx *InPredicateContext) interface{} {
+func (v *BaseMySqlParserVisitor) VisitInExpressions(ctx *InExpressionsContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -2297,6 +2297,10 @@ func (v *BaseMySqlParserVisitor) VisitBetweenPredicate(ctx *BetweenPredicateCont
 }
 
 func (v *BaseMySqlParserVisitor) VisitIsNullPredicate(ctx *IsNullPredicateContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMySqlParserVisitor) VisitInSubSelect(ctx *InSubSelectContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -2369,6 +2373,14 @@ func (v *BaseMySqlParserVisitor) VisitFullColumnNameExpressionAtom(ctx *FullColu
 }
 
 func (v *BaseMySqlParserVisitor) VisitBitExpressionAtom(ctx *BitExpressionAtomContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMySqlParserVisitor) VisitExpressionList(ctx *ExpressionListContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseMySqlParserVisitor) VisitSubSelect(ctx *SubSelectContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

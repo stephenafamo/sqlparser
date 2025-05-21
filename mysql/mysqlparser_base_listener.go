@@ -3197,18 +3197,6 @@ func (s *BaseMySqlParserListener) EnterIndexColumnNames(ctx *IndexColumnNamesCon
 // ExitIndexColumnNames is called when production indexColumnNames is exited.
 func (s *BaseMySqlParserListener) ExitIndexColumnNames(ctx *IndexColumnNamesContext) {}
 
-// EnterExpressions is called when production expressions is entered.
-func (s *BaseMySqlParserListener) EnterExpressions(ctx *ExpressionsContext) {}
-
-// ExitExpressions is called when production expressions is exited.
-func (s *BaseMySqlParserListener) ExitExpressions(ctx *ExpressionsContext) {}
-
-// EnterExpressionsWithDefaults is called when production expressionsWithDefaults is entered.
-func (s *BaseMySqlParserListener) EnterExpressionsWithDefaults(ctx *ExpressionsWithDefaultsContext) {}
-
-// ExitExpressionsWithDefaults is called when production expressionsWithDefaults is exited.
-func (s *BaseMySqlParserListener) ExitExpressionsWithDefaults(ctx *ExpressionsWithDefaultsContext) {}
-
 // EnterConstants is called when production constants is entered.
 func (s *BaseMySqlParserListener) EnterConstants(ctx *ConstantsContext) {}
 
@@ -3238,6 +3226,12 @@ func (s *BaseMySqlParserListener) EnterCurrentTimestamp(ctx *CurrentTimestampCon
 
 // ExitCurrentTimestamp is called when production currentTimestamp is exited.
 func (s *BaseMySqlParserListener) ExitCurrentTimestamp(ctx *CurrentTimestampContext) {}
+
+// EnterExpressionsWithDefaults is called when production expressionsWithDefaults is entered.
+func (s *BaseMySqlParserListener) EnterExpressionsWithDefaults(ctx *ExpressionsWithDefaultsContext) {}
+
+// ExitExpressionsWithDefaults is called when production expressionsWithDefaults is exited.
+func (s *BaseMySqlParserListener) ExitExpressionsWithDefaults(ctx *ExpressionsWithDefaultsContext) {}
 
 // EnterExpressionOrDefault is called when production expressionOrDefault is entered.
 func (s *BaseMySqlParserListener) EnterExpressionOrDefault(ctx *ExpressionOrDefaultContext) {}
@@ -3507,6 +3501,12 @@ func (s *BaseMySqlParserListener) EnterFunctionArg(ctx *FunctionArgContext) {}
 // ExitFunctionArg is called when production functionArg is exited.
 func (s *BaseMySqlParserListener) ExitFunctionArg(ctx *FunctionArgContext) {}
 
+// EnterExpressions is called when production expressions is entered.
+func (s *BaseMySqlParserListener) EnterExpressions(ctx *ExpressionsContext) {}
+
+// ExitExpressions is called when production expressions is exited.
+func (s *BaseMySqlParserListener) ExitExpressions(ctx *ExpressionsContext) {}
+
 // EnterIsExpression is called when production isExpression is entered.
 func (s *BaseMySqlParserListener) EnterIsExpression(ctx *IsExpressionContext) {}
 
@@ -3565,11 +3565,11 @@ func (s *BaseMySqlParserListener) EnterBinaryComparisonPredicate(ctx *BinaryComp
 func (s *BaseMySqlParserListener) ExitBinaryComparisonPredicate(ctx *BinaryComparisonPredicateContext) {
 }
 
-// EnterInPredicate is called when production inPredicate is entered.
-func (s *BaseMySqlParserListener) EnterInPredicate(ctx *InPredicateContext) {}
+// EnterInExpressions is called when production inExpressions is entered.
+func (s *BaseMySqlParserListener) EnterInExpressions(ctx *InExpressionsContext) {}
 
-// ExitInPredicate is called when production inPredicate is exited.
-func (s *BaseMySqlParserListener) ExitInPredicate(ctx *InPredicateContext) {}
+// ExitInExpressions is called when production inExpressions is exited.
+func (s *BaseMySqlParserListener) ExitInExpressions(ctx *InExpressionsContext) {}
 
 // EnterBetweenPredicate is called when production betweenPredicate is entered.
 func (s *BaseMySqlParserListener) EnterBetweenPredicate(ctx *BetweenPredicateContext) {}
@@ -3582,6 +3582,12 @@ func (s *BaseMySqlParserListener) EnterIsNullPredicate(ctx *IsNullPredicateConte
 
 // ExitIsNullPredicate is called when production isNullPredicate is exited.
 func (s *BaseMySqlParserListener) ExitIsNullPredicate(ctx *IsNullPredicateContext) {}
+
+// EnterInSubSelect is called when production inSubSelect is entered.
+func (s *BaseMySqlParserListener) EnterInSubSelect(ctx *InSubSelectContext) {}
+
+// ExitInSubSelect is called when production inSubSelect is exited.
+func (s *BaseMySqlParserListener) ExitInSubSelect(ctx *InSubSelectContext) {}
 
 // EnterLikePredicate is called when production likePredicate is entered.
 func (s *BaseMySqlParserListener) EnterLikePredicate(ctx *LikePredicateContext) {}
@@ -3696,6 +3702,18 @@ func (s *BaseMySqlParserListener) EnterBitExpressionAtom(ctx *BitExpressionAtomC
 
 // ExitBitExpressionAtom is called when production bitExpressionAtom is exited.
 func (s *BaseMySqlParserListener) ExitBitExpressionAtom(ctx *BitExpressionAtomContext) {}
+
+// EnterExpressionList is called when production expressionList is entered.
+func (s *BaseMySqlParserListener) EnterExpressionList(ctx *ExpressionListContext) {}
+
+// ExitExpressionList is called when production expressionList is exited.
+func (s *BaseMySqlParserListener) ExitExpressionList(ctx *ExpressionListContext) {}
+
+// EnterSubSelect is called when production subSelect is entered.
+func (s *BaseMySqlParserListener) EnterSubSelect(ctx *SubSelectContext) {}
+
+// ExitSubSelect is called when production subSelect is exited.
+func (s *BaseMySqlParserListener) ExitSubSelect(ctx *SubSelectContext) {}
 
 // EnterUnaryOperator is called when production unaryOperator is entered.
 func (s *BaseMySqlParserListener) EnterUnaryOperator(ctx *UnaryOperatorContext) {}

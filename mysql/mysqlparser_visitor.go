@@ -1541,12 +1541,6 @@ type MySqlParserVisitor interface {
 	// Visit a parse tree produced by MySqlParser#indexColumnNames.
 	VisitIndexColumnNames(ctx *IndexColumnNamesContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#expressions.
-	VisitExpressions(ctx *ExpressionsContext) interface{}
-
-	// Visit a parse tree produced by MySqlParser#expressionsWithDefaults.
-	VisitExpressionsWithDefaults(ctx *ExpressionsWithDefaultsContext) interface{}
-
 	// Visit a parse tree produced by MySqlParser#constants.
 	VisitConstants(ctx *ConstantsContext) interface{}
 
@@ -1561,6 +1555,9 @@ type MySqlParserVisitor interface {
 
 	// Visit a parse tree produced by MySqlParser#currentTimestamp.
 	VisitCurrentTimestamp(ctx *CurrentTimestampContext) interface{}
+
+	// Visit a parse tree produced by MySqlParser#expressionsWithDefaults.
+	VisitExpressionsWithDefaults(ctx *ExpressionsWithDefaultsContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#expressionOrDefault.
 	VisitExpressionOrDefault(ctx *ExpressionOrDefaultContext) interface{}
@@ -1691,6 +1688,9 @@ type MySqlParserVisitor interface {
 	// Visit a parse tree produced by MySqlParser#functionArg.
 	VisitFunctionArg(ctx *FunctionArgContext) interface{}
 
+	// Visit a parse tree produced by MySqlParser#expressions.
+	VisitExpressions(ctx *ExpressionsContext) interface{}
+
 	// Visit a parse tree produced by MySqlParser#isExpression.
 	VisitIsExpression(ctx *IsExpressionContext) interface{}
 
@@ -1718,14 +1718,17 @@ type MySqlParserVisitor interface {
 	// Visit a parse tree produced by MySqlParser#binaryComparisonPredicate.
 	VisitBinaryComparisonPredicate(ctx *BinaryComparisonPredicateContext) interface{}
 
-	// Visit a parse tree produced by MySqlParser#inPredicate.
-	VisitInPredicate(ctx *InPredicateContext) interface{}
+	// Visit a parse tree produced by MySqlParser#inExpressions.
+	VisitInExpressions(ctx *InExpressionsContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#betweenPredicate.
 	VisitBetweenPredicate(ctx *BetweenPredicateContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#isNullPredicate.
 	VisitIsNullPredicate(ctx *IsNullPredicateContext) interface{}
+
+	// Visit a parse tree produced by MySqlParser#inSubSelect.
+	VisitInSubSelect(ctx *InSubSelectContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#likePredicate.
 	VisitLikePredicate(ctx *LikePredicateContext) interface{}
@@ -1780,6 +1783,12 @@ type MySqlParserVisitor interface {
 
 	// Visit a parse tree produced by MySqlParser#bitExpressionAtom.
 	VisitBitExpressionAtom(ctx *BitExpressionAtomContext) interface{}
+
+	// Visit a parse tree produced by MySqlParser#expressionList.
+	VisitExpressionList(ctx *ExpressionListContext) interface{}
+
+	// Visit a parse tree produced by MySqlParser#subSelect.
+	VisitSubSelect(ctx *SubSelectContext) interface{}
 
 	// Visit a parse tree produced by MySqlParser#unaryOperator.
 	VisitUnaryOperator(ctx *UnaryOperatorContext) interface{}

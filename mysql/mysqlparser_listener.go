@@ -1541,12 +1541,6 @@ type MySqlParserListener interface {
 	// EnterIndexColumnNames is called when entering the indexColumnNames production.
 	EnterIndexColumnNames(c *IndexColumnNamesContext)
 
-	// EnterExpressions is called when entering the expressions production.
-	EnterExpressions(c *ExpressionsContext)
-
-	// EnterExpressionsWithDefaults is called when entering the expressionsWithDefaults production.
-	EnterExpressionsWithDefaults(c *ExpressionsWithDefaultsContext)
-
 	// EnterConstants is called when entering the constants production.
 	EnterConstants(c *ConstantsContext)
 
@@ -1561,6 +1555,9 @@ type MySqlParserListener interface {
 
 	// EnterCurrentTimestamp is called when entering the currentTimestamp production.
 	EnterCurrentTimestamp(c *CurrentTimestampContext)
+
+	// EnterExpressionsWithDefaults is called when entering the expressionsWithDefaults production.
+	EnterExpressionsWithDefaults(c *ExpressionsWithDefaultsContext)
 
 	// EnterExpressionOrDefault is called when entering the expressionOrDefault production.
 	EnterExpressionOrDefault(c *ExpressionOrDefaultContext)
@@ -1691,6 +1688,9 @@ type MySqlParserListener interface {
 	// EnterFunctionArg is called when entering the functionArg production.
 	EnterFunctionArg(c *FunctionArgContext)
 
+	// EnterExpressions is called when entering the expressions production.
+	EnterExpressions(c *ExpressionsContext)
+
 	// EnterIsExpression is called when entering the isExpression production.
 	EnterIsExpression(c *IsExpressionContext)
 
@@ -1718,14 +1718,17 @@ type MySqlParserListener interface {
 	// EnterBinaryComparisonPredicate is called when entering the binaryComparisonPredicate production.
 	EnterBinaryComparisonPredicate(c *BinaryComparisonPredicateContext)
 
-	// EnterInPredicate is called when entering the inPredicate production.
-	EnterInPredicate(c *InPredicateContext)
+	// EnterInExpressions is called when entering the inExpressions production.
+	EnterInExpressions(c *InExpressionsContext)
 
 	// EnterBetweenPredicate is called when entering the betweenPredicate production.
 	EnterBetweenPredicate(c *BetweenPredicateContext)
 
 	// EnterIsNullPredicate is called when entering the isNullPredicate production.
 	EnterIsNullPredicate(c *IsNullPredicateContext)
+
+	// EnterInSubSelect is called when entering the inSubSelect production.
+	EnterInSubSelect(c *InSubSelectContext)
 
 	// EnterLikePredicate is called when entering the likePredicate production.
 	EnterLikePredicate(c *LikePredicateContext)
@@ -1780,6 +1783,12 @@ type MySqlParserListener interface {
 
 	// EnterBitExpressionAtom is called when entering the bitExpressionAtom production.
 	EnterBitExpressionAtom(c *BitExpressionAtomContext)
+
+	// EnterExpressionList is called when entering the expressionList production.
+	EnterExpressionList(c *ExpressionListContext)
+
+	// EnterSubSelect is called when entering the subSelect production.
+	EnterSubSelect(c *SubSelectContext)
 
 	// EnterUnaryOperator is called when entering the unaryOperator production.
 	EnterUnaryOperator(c *UnaryOperatorContext)
@@ -3353,12 +3362,6 @@ type MySqlParserListener interface {
 	// ExitIndexColumnNames is called when exiting the indexColumnNames production.
 	ExitIndexColumnNames(c *IndexColumnNamesContext)
 
-	// ExitExpressions is called when exiting the expressions production.
-	ExitExpressions(c *ExpressionsContext)
-
-	// ExitExpressionsWithDefaults is called when exiting the expressionsWithDefaults production.
-	ExitExpressionsWithDefaults(c *ExpressionsWithDefaultsContext)
-
 	// ExitConstants is called when exiting the constants production.
 	ExitConstants(c *ConstantsContext)
 
@@ -3373,6 +3376,9 @@ type MySqlParserListener interface {
 
 	// ExitCurrentTimestamp is called when exiting the currentTimestamp production.
 	ExitCurrentTimestamp(c *CurrentTimestampContext)
+
+	// ExitExpressionsWithDefaults is called when exiting the expressionsWithDefaults production.
+	ExitExpressionsWithDefaults(c *ExpressionsWithDefaultsContext)
 
 	// ExitExpressionOrDefault is called when exiting the expressionOrDefault production.
 	ExitExpressionOrDefault(c *ExpressionOrDefaultContext)
@@ -3503,6 +3509,9 @@ type MySqlParserListener interface {
 	// ExitFunctionArg is called when exiting the functionArg production.
 	ExitFunctionArg(c *FunctionArgContext)
 
+	// ExitExpressions is called when exiting the expressions production.
+	ExitExpressions(c *ExpressionsContext)
+
 	// ExitIsExpression is called when exiting the isExpression production.
 	ExitIsExpression(c *IsExpressionContext)
 
@@ -3530,14 +3539,17 @@ type MySqlParserListener interface {
 	// ExitBinaryComparisonPredicate is called when exiting the binaryComparisonPredicate production.
 	ExitBinaryComparisonPredicate(c *BinaryComparisonPredicateContext)
 
-	// ExitInPredicate is called when exiting the inPredicate production.
-	ExitInPredicate(c *InPredicateContext)
+	// ExitInExpressions is called when exiting the inExpressions production.
+	ExitInExpressions(c *InExpressionsContext)
 
 	// ExitBetweenPredicate is called when exiting the betweenPredicate production.
 	ExitBetweenPredicate(c *BetweenPredicateContext)
 
 	// ExitIsNullPredicate is called when exiting the isNullPredicate production.
 	ExitIsNullPredicate(c *IsNullPredicateContext)
+
+	// ExitInSubSelect is called when exiting the inSubSelect production.
+	ExitInSubSelect(c *InSubSelectContext)
 
 	// ExitLikePredicate is called when exiting the likePredicate production.
 	ExitLikePredicate(c *LikePredicateContext)
@@ -3592,6 +3604,12 @@ type MySqlParserListener interface {
 
 	// ExitBitExpressionAtom is called when exiting the bitExpressionAtom production.
 	ExitBitExpressionAtom(c *BitExpressionAtomContext)
+
+	// ExitExpressionList is called when exiting the expressionList production.
+	ExitExpressionList(c *ExpressionListContext)
+
+	// ExitSubSelect is called when exiting the subSelect production.
+	ExitSubSelect(c *SubSelectContext)
 
 	// ExitUnaryOperator is called when exiting the unaryOperator production.
 	ExitUnaryOperator(c *UnaryOperatorContext)
